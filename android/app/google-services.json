@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1036491235505",
+    "firebase_url": "https://permitapp-af86c.firebaseio.com",
+    "project_id": "permitapp-af86c",
+    "storage_bucket": "permitapp-af86c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036491235505:android:e542e1639489d06fc14290",
+        "android_client_info": {
+          "package_name": "com.afrovenus.permitappbw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1036491235505-7fjshsjpj0qq58ka0p80rnklcis34q1o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVmuMpm5hNS8O3DDlsh8MSEJGKISIkt4s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036491235505-7fjshsjpj0qq58ka0p80rnklcis34q1o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
