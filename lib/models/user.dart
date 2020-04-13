@@ -13,117 +13,116 @@ String userToJson(User data) {
 
 class User{
   String id ;
-  String name;
-  String surname;
+  String fullName;
+  String location;
   String gender;
-  String idNumber;
+  String identificationNum;
   String nationality;
-  String doB;
-  String physicalAdd;
-  String plotNo;
-  String ward;
-  String villageCity;
+  String dateOfBirth;
+  String physicalAddress;
   String email;
-  String number1;
-  String number2;
-  String other;
+  String phone;
   String password;
-  String member1Name;
-  String member2Name;
-  String member1Surname;
-  String member2Surname;
-  String member1Number;
-  String member2Number;
 
   void setName(String name){
-    this.name = name;
+    this.fullName = name;
   }
   void setSurname(String name){
-    this.surname = name;
+    this.location = name;
   }
   void setGender(String name){
     this.gender = name;
   }
   void setIdNo(String name){
-    this.idNumber = name;
+    this.identificationNum = name;
   }
   void setNationality(String name){
     this.nationality = name;
   }
   void setdob(String name){
-    this.doB = name;
+    this.dateOfBirth = name;
   }
   void setPhyAdd(String name){
-    this.physicalAdd = name;
-  }
-  void setPlot(String name){
-    this.plotNo = name;
-  }
-  void setWard(String name){
-    this.ward = name;
+    this.physicalAddress = name;
   }
   void setEmail(String name){
     this.email = name;
   }
   void setNo1(String name){
-    this.number1 = name;
-  }
-  void setNo2(String name){
-    this.number2 = name;
-  }
-  void setVil(String name){
-    this.villageCity = name;
-  }
-  void setOther(String name){
-    this.other = name;
+    this.phone = name;
   }
   void setPassword(String name){
     this.password = name;
   }
 
 
-  User({this.id, this.name, this.surname, this.gender, this.idNumber, this.nationality, this.doB, this.physicalAdd,this.plotNo
-  , this.ward, this.villageCity, this.email, this.number1, this.number2, this.other, this.member1Name, this.member2Name, this.member1Surname,
-  this.member2Surname, this.member1Number, this.member2Number});
+  String getName(){
+    return fullName;
+  }
+  String getSurname(){
+    return location;
+  }
+  String getGender(){
+    return gender;
+  }
+  String getIdNo(){
+    return identificationNum;
+  }
+  String getNationality(){
+    return nationality;
+  }
+  String getdob(){
+    return dateOfBirth;
+  }
+  String getPhyAdd(){
+    return physicalAddress;
+  }
+  String getEmail(){
+    return email;
+  }
+  String getNo1(){
+    return phone;
+  }
+
+  User({this.id, this.fullName, this.location, this.gender, this.identificationNum, this.nationality, this.dateOfBirth, this.physicalAddress
+  , this.email, this.phone});
 
   User.fromData(Map<String, dynamic>data) :
-        id = data['id'],
-        name = data['name'],
-        surname = data['surname'],
+        fullName = data['fullname'],
+        location = data['location'],
         gender = data['gender'],
-        idNumber = data['id_number'],
+        identificationNum = data['identificationNum'],
         nationality = data['nationality'],
-        doB = data['date_of_birth'],
-        physicalAdd = data['physical_address'],
-        plotNo = data['plot_no'],
-        ward = data['ward'],
-        villageCity = data['village_city'],
-        email = data['email'],
-        number1 = data['number1'],
-        number2 = data['number2'],
-        other = data['other'];
+        dateOfBirth = data['dateOfBirth'],
+        physicalAddress = data['physicalAddress'],
+//        email = data['email'],
+        phone = data['phone'];
 
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
-      "name": name,
-      "surname": surname,
+      "fullname": fullName,
+      "location": location,
       "gender": gender,
-      "id_number": idNumber,
+      "identificationNum": identificationNum,
       "nationality": nationality,
-      "date_of_birth": doB,
-      "physical_address": physicalAdd,
-      "plot_no": plotNo,
-      "ward": ward,
-      "village_city": villageCity,
-      "email": email,
-      "number1": number1,
-      "number2": number2,
-      "other": other,
+      "dateOfBirth": dateOfBirth,
+      "physicalAddress": physicalAddress,
+//      "email": email,
+      "phone": phone,
     };
   }
 
+
   factory User.fromDocument(DocumentSnapshot doc) {
-    //return User.fromJson(doc.data);
+    Map data = doc.data;
+    return User(
+      fullName: data['fullname'],
+      gender: data['gender'],
+      identificationNum: data['identificationNum'],
+      nationality: data['nationality'],
+      dateOfBirth: data['dateOfBirth'],
+      phone: data['phone'],
+      physicalAddress: data['physicalAddress'],
+    );
   }
 }

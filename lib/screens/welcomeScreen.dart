@@ -2,15 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permitappbw/services/auth.dart';
-import 'package:permitappbw/views/signup.dart';
+import 'package:permitappbw/screens/signup.dart';
 
 import 'loginPage.dart';
 
 class WelcomePage extends StatefulWidget {
   final BaseAuth auth;
-  final VoidCallback loginCallback;
 
-  WelcomePage({this.auth, this.loginCallback});
+  WelcomePage({this.auth});
   @override
   _WelcomePageState createState() => _WelcomePageState();
 }
@@ -20,7 +19,7 @@ class _WelcomePageState extends State<WelcomePage> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+            context, MaterialPageRoute(builder: (context) => LoginPage(auth: widget.auth,)));
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -72,7 +71,7 @@ class _WelcomePageState extends State<WelcomePage> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SignUpPage()));
+            context, MaterialPageRoute(builder: (context) => SignUpPage(auth: widget.auth,)));
       },
       child: Container(
         width: MediaQuery.of(context).size.width,

@@ -43,7 +43,10 @@ dev_dependencies:
   get_it: ^3.0.0+1
   provider_architecture: ^1.0.3
   shared_preferences: ^0.5.6+3
-  #flushbar: ^1.10.0
+  path_provider: 1.6.5
+  datetime_picker_formfield: ^1.0.0
+  qr_flutter: ^3.1.0
+  flushbar: ^1.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:permitappbw/models/permit.dart';
 import 'package:permitappbw/models/settings.dart';
 import 'package:permitappbw/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,32 +11,29 @@ enum authProblems { UserNotFound, PasswordNotValid, NetworkError, UnknownError }
 
 abstract class BaseAuth {
   Future<String> signIn(String email, String password);
-
   Future<String> signUp(String email, String password);
-
   Future<FirebaseUser> getCurrentUser();
-
+  Future<DocumentSnapshot> getUserData(String useId);
   Future<void> addData(User user);
-
+  Future<void> addPermit(Permit permit);
+  Future<void> addSpecialPermit(Permit permit);
   Future<void> sendEmailVerification();
-
+  Future<void> forgotPasswordEmail(String email);
   Future<void> signOut();
-
   Future<bool> isEmailVerified();
+  String getExceptionText(Exception e);
 }
 
 class Auth implements BaseAuth{
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
    Future<String> signUp(String email, String password) async {
     AuthResult result = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
     FirebaseUser user = result.user;
     return user.uid;
   }
-//  Future<FirebaseUser> getCurrentUser() async {
-//    FirebaseUser user = await _firebaseAuth.currentUser();
-//    return user;
-//  }
+
   Future<bool> isEmailVerified() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     return user.isEmailVerified;
@@ -51,7 +49,7 @@ class Auth implements BaseAuth{
    void addUserSettingsDB(User user) async {
     checkUserExist(user.id).then((value) {
       if (!value) {
-        print("user ${user.name} ${user.email} added");
+        print("user ${user.fullName} ${user.email} added");
         Firestore.instance
             .document("users/${user.id}")
             .setData(user.toJson());
@@ -59,7 +57,7 @@ class Auth implements BaseAuth{
           settingsId: user.id,
         ));
       } else {
-        print("user ${user.name} ${user.email} exists");
+        print("user ${user.fullName} ${user.email} exists");
       }
     });
   }
@@ -67,7 +65,7 @@ class Auth implements BaseAuth{
    Future<bool> checkUserExist(String userId) async {
     bool exists = false;
     try {
-      await Firestore.instance.document("users/$userId").get().then((doc) {
+      await Firestore.instance.document("applicants/$userId").get().then((doc) {
         if (doc.exists)
           exists = true;
         else
@@ -158,45 +156,23 @@ class Auth implements BaseAuth{
       return null;
     }
   }
-//
-//   Future<void> signOut() async {
-//    SharedPreferences prefs = await SharedPreferences.getInstance();
-//    await prefs.clear();
-//    FirebaseAuth.instance.signOut();
-//  }
-
    Future<void> addData(User user) async{
-    checkUserExist(user.id).then((value){
-      if(!value){
-        print("user ${user.name} ${user.email} added");
+    getCurrentUser().then((value){
+      if(value != null){
+        print("applicants ${user.fullName} ${user.email} added");
         Firestore.instance
-            .collection("users")
-            .document(user.id).setData(
+            .collection("applicants")
+            .document(value.uid).setData(
           {
-            "name": user.name,
-            "surname": user.surname,
+            "fullname": user.fullName,
+            "location": user.location,
             "gender": user.gender,
-            "id_number": user.idNumber,
+            "identificationNum": user.identificationNum,
             "nationality": user.nationality,
-            "date_of_birth": user.doB,
-            "physical_address": user.physicalAdd,
-            "plot_No": user.plotNo,
-            "ward": user.ward,
-            "village/city": user.villageCity,
-            "email": user.email,
-            "ContactNo.1": user.number1,
-            "ContactNo.2": user.number2,
-            "other": user.other,
-            "Member1": {
-              "name" : user.member1Name,
-              "surname" : user.member1Surname,
-              "ContactNo" : user.member1Number
-            },
-            "Member2": {
-              "name" : user.member2Name,
-              "surname" : user.member2Surname,
-              "ContactNo" : user.member2Number
-            }
+            "dateOfBirth": user.dateOfBirth,
+            "physicalAddress": user.physicalAddress,
+            //"email": user.email,
+            "phone": user.phone,
           }
         );
       }
@@ -204,15 +180,60 @@ class Auth implements BaseAuth{
     );
   }
 
+//  Future<void> addEssentialPermit(Permit permit) async{
+//    getCurrentUser().then((value){
+//      if(value!= null){
+//        Firestore.instance
+//            .collection('users')
+//            .document(value.uid)
+//            .collection('permits')
+//            .document().setData(permit.toEssential());
+//      }
+//    });
+//  }
+  Future<void> addPermit(Permit permit) async{
+    getCurrentUser().then((value){
+      if(value!= null){
+        Firestore.instance
+            .collection('permits')
+            .document().setData(permit.toJSON());
+      }
+    }
+    );
+  }
+  Future<void> addSpecialPermit(Permit permit) async{
+    getCurrentUser().then((value){
+      if(value!= null){
+        Firestore.instance
+            .collection('permits')
+            .document().setData(permit.toJSONSpecial());
+      }
+    }
+    );
+  }
+
+  Future<DocumentSnapshot> getUserData(String userId) async{
+     return Firestore.instance.collection("users").document(userId).get();
+  }
+
+//  CreateListofCourses(QuerySnapshot snapshot)async
+//  {
+//    var docs = snapshot.documents;
+//    for (var Doc in docs)
+//    {
+//      FinalUserInfo.add(User.fromDocument(Doc));
+//    }
+//  }
+
    void addUser(User user) async {
     checkUserExist(user.id).then((value) {
       if (!value) {
-        print("user ${user.name} ${user.email} added");
+        print("user ${user.fullName} ${user.email} added");
         Firestore.instance
             .document("users/${user.id}")
             .setData(user.toJson());
       } else {
-        print("user ${user.name} ${user.email} exists");
+        print("user ${user.fullName} ${user.email} exists");
       }
     });
   }

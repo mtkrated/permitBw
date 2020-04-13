@@ -1,42 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:permitappbw/services/authentication.dart';
-import 'package:permitappbw/services/root_page.dart';
-import 'package:permitappbw/views/register.dart';
-import 'package:permitappbw/views/home.dart';
-import 'package:permitappbw/views/welcome.dart';
+import 'package:permitappbw/services/auth.dart';
+import 'package:permitappbw/screens/home.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:permitappbw/views/welcomeScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:permitappbw/screens/welcomeScreen.dart';
 import 'package:splashscreen/splashscreen.dart';
-
-import 'forms/form1.dart';
-import 'forms/form2.dart';
 
 void main() => runApp(App());
 
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: [
-        const Locale('en', 'US'), // English
-      ],
-      debugShowCheckedModeBanner: false,
-      title: 'Meet Up',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return GestureDetector(
+      onTap: (){
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: MaterialApp(
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', 'US'), // English
+        ],
+        debugShowCheckedModeBanner: false,
+        title: 'Meet Up',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+            home: Splash(auth: new Auth()),
       ),
-          home: Splash(),
     );
-//        home: new RootPage(auth: new Auth()));
   }
 }
 
 class Splash extends StatefulWidget {
+  final BaseAuth auth;
+  Splash({this.auth});
   @override
   _SplashState createState() => _SplashState();
 }
@@ -45,19 +49,20 @@ class _SplashState extends State<Splash> {
   @override
   void initState(){
     super.initState();
-    FirebaseAuth.instance.currentUser().then((res) {
+    widget.auth.getCurrentUser().then((res) {
       print(res);
       if (res != null) {
+        widget.auth.getUserData(res.uid).then((DocumentSnapshot result) =>
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage(userId: res.uid)),
-        );
+          MaterialPageRoute(builder: (context) => HomePage(auth: widget.auth,userId: res.uid )),
+        ).catchError((err) => print(err)));
       }
       else
       {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => WelcomePage()),
+          MaterialPageRoute(builder: (context) => WelcomePage(auth: widget.auth,)),
         );
       }
     });
